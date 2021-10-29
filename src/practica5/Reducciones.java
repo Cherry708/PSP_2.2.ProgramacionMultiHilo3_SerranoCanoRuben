@@ -163,7 +163,7 @@ class Contador{
     public void asignaMultiplosCinco(int multiplos){
         //this.multiploCinco = multiplos;
         for (int i = 0; i < multiplos; i++)
-            multiploDos.getAndIncrement();
+            multiploCinco.getAndIncrement();
     }
 
     public AtomicInteger muestraMultiplosDos(){

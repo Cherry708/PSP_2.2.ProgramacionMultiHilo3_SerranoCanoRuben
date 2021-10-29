@@ -58,7 +58,7 @@ public class Reducciones {
 
     static void implementacionCiclica(long[] lista, int numHebras){
         System.out.println();
-        System.out.println("Implementacion secuencial");
+        System.out.println("Implementacion ciclica");
 
         //Tiempos
         long t1;

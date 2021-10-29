@@ -119,21 +119,27 @@ class MiHebraCiclica extends Thread {
         for (int i = idHebra; i < lista.length; i += numHebras) {
             if (i % 2 == 0){
                 multiploDos++;
-                contador.asignaMultiplosDos(multiploDos);
+                //contador.asignaMultiplosDos(multiploDos);
             }
+            contador.asignaMultiplosDos(multiploDos);
+
             if (i % 3 == 0){
                 multiploTres++;
-                contador.asignaMultiplosTres(multiploTres);
+
             }
+            contador.asignaMultiplosTres(multiploTres);
+
             if (i % 5 == 0){
                 multiploCinco++;
-                contador.asignaMultiplosCinco(multiploCinco);
             }
+            contador.asignaMultiplosCinco(multiploCinco);
+
         }
     }
 
 }
 
+//Usar atomic
 class Contador{
     volatile int multiploDos;
     volatile int multiploTres;

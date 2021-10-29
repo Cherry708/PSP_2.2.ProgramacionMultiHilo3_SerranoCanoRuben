@@ -88,7 +88,7 @@ class MaximoHebraCiclica extends Thread{
 
 class MaximoHebra {
     long maximo = 0;
-    //Es realmente necesario synchronized?
+    //Es realmente necesario synchronized? No, al ser una asignacion con volatile es suficiente
     synchronized void asignaValor(long valor ) {
         this.maximo = valor;
     }

@@ -119,49 +119,60 @@ class MiHebraCiclica extends Thread {
         for (int i = idHebra; i < lista.length; i += numHebras) {
             if (i % 2 == 0){
                 multiploDos++;
-                //contador.asignaMultiplosDos(multiploDos);
             }
-            contador.asignaMultiplosDos(multiploDos);
 
             if (i % 3 == 0){
                 multiploTres++;
 
             }
-            contador.asignaMultiplosTres(multiploTres);
 
             if (i % 5 == 0){
                 multiploCinco++;
             }
-            contador.asignaMultiplosCinco(multiploCinco);
 
         }
+
+        contador.asignaMultiplosDos(multiploDos);
+        contador.asignaMultiplosTres(multiploTres);
+        contador.asignaMultiplosCinco(multiploCinco);
     }
 
 }
 
 //Usar atomic
 class Contador{
+    /*
     volatile int multiploDos;
     volatile int multiploTres;
     volatile int multiploCinco;
+    */
+    AtomicInteger multiploDos = new AtomicInteger(0);
+    AtomicInteger multiploTres = new AtomicInteger(0);
+    AtomicInteger multiploCinco = new AtomicInteger(0);
 
     public void asignaMultiplosDos(int multiplos){
-        this.multiploDos = multiplos;
+        //this.multiploDos = multiplos;
+        for (int i = 0; i < multiplos; i++)
+            multiploDos.getAndIncrement();
     }
     public void asignaMultiplosTres(int multiplos){
-        this.multiploTres = multiplos;
+        //this.multiploTres = multiplos;
+        for (int i = 0; i < multiplos; i++)
+            multiploTres.getAndIncrement();
     }
     public void asignaMultiplosCinco(int multiplos){
-        this.multiploCinco = multiplos;
+        //this.multiploCinco = multiplos;
+        for (int i = 0; i < multiplos; i++)
+            multiploDos.getAndIncrement();
     }
 
-    public int muestraMultiplosDos(){
+    public AtomicInteger muestraMultiplosDos(){
         return multiploDos;
     }
-    public int muestraMultiplosTres(){
+    public AtomicInteger muestraMultiplosTres(){
         return multiploTres;
     }
-    public int muestraMultiplosCinco(){
+    public AtomicInteger muestraMultiplosCinco(){
         return multiploCinco;
     }
 

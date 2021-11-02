@@ -19,7 +19,11 @@ public class Reducciones {
 
         implementacionSecuencial(vector);
         implementacionCiclica(vector,numHebras);
+        implementacionCiclicaSinReduccion(vector,numHebras);
+        implementacionCiclicaAtomica(vector,numHebras);
+
     }
+
     static void implementacionSecuencial(long[] lista){
         System.out.println();
         System.out.println("Implementacion secuencial");
@@ -54,11 +58,12 @@ public class Reducciones {
         System.out.println("Multiplos de 3: "+multiplosTres);
         System.out.println("Multiplos de 5: "+multiplosCinco);
         System.out.println("Tiempo total: "+tt);
+        System.out.println("-------------------");
     }
 
     static void implementacionCiclica(long[] lista, int numHebras){
         System.out.println();
-        System.out.println("Implementacion ciclica");
+        System.out.println("Implementacion ciclica con reducciones");
 
         //Tiempos
         long t1;
@@ -66,14 +71,14 @@ public class Reducciones {
         double tt;
 
         //Objetos
-        MiHebraCiclica[] listaHebrasCiclicas = new MiHebraCiclica[numHebras];
+        MiHebraCiclicaReducciones[] listaHebrasCiclicas = new MiHebraCiclicaReducciones[numHebras];
         Contador contador = new Contador();
 
         t1 = System.nanoTime();
 
         //Start
         for (int idHebra = 0; idHebra < numHebras; idHebra++){
-            listaHebrasCiclicas[idHebra] = new MiHebraCiclica(idHebra,numHebras,lista, contador);
+            listaHebrasCiclicas[idHebra] = new MiHebraCiclicaReducciones(idHebra,numHebras,lista, contador);
             listaHebrasCiclicas[idHebra].start();
         }
 
@@ -95,15 +100,112 @@ public class Reducciones {
         System.out.println("Multiplos de 3: "+contador.muestraMultiplosTres());
         System.out.println("Multiplos de 5: "+contador.muestraMultiplosCinco());
         System.out.println("Tiempo total: "+tt);
+        System.out.println("-------------------");
+    }
+
+    static void implementacionCiclicaAtomica(long[] lista, int numHebras){
+        System.out.println();
+        System.out.println("Implementacion ciclica atomica con reducciones");
+
+        //contadores
+        int multiploDos = 0;
+        int multiploTres = 0;
+        int multiploCinco = 0;
+
+        //Tiempos
+        long t1;
+        long t2;
+        double tt;
+
+        //Objetos
+        MiHebraCiclicaReduccionesAtomica[] listaHebrasCiclicas = new MiHebraCiclicaReduccionesAtomica[numHebras];
+
+        t1 = System.nanoTime();
+
+        //Start
+        for (int idHebra = 0; idHebra < numHebras; idHebra++){
+            listaHebrasCiclicas[idHebra] = new MiHebraCiclicaReduccionesAtomica(idHebra,numHebras,lista);
+            listaHebrasCiclicas[idHebra].start();
+        }
+
+        //Join
+        for (int idHebra = 0; idHebra < numHebras; idHebra++){
+            try {
+                listaHebrasCiclicas[idHebra].join();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        t2 = System.nanoTime();
+        tt = ((double) (t2 - t1)) / 1.0e9;
+
+
+
+        for (int i = 0; i<listaHebrasCiclicas.length; i++){
+            multiploDos += listaHebrasCiclicas[i].getMultiploDos().intValue();
+            multiploTres += listaHebrasCiclicas[i].getMultiploTres().intValue();
+            multiploCinco += listaHebrasCiclicas[i].getMultiploCinco().intValue();
+        }
+
+        //Resultado
+        System.out.println();
+        System.out.println("Multiplos de 2: "+multiploDos);
+        System.out.println("Multiplos de 3: "+multiploTres);
+        System.out.println("Multiplos de 5: "+multiploCinco);
+        System.out.println("Tiempo total: "+tt);
+        System.out.println("-------------------");
+    }
+
+    static void implementacionCiclicaSinReduccion(long[] lista, int numHebras){
+        System.out.println();
+        System.out.println("Implementacion ciclica sin reducciones");
+
+        //Tiempos
+        long t1;
+        long t2;
+        double tt;
+
+        //Objetos
+        MiHebraCiclicaSinReducciones[] listaHebrasCiclicas = new MiHebraCiclicaSinReducciones[numHebras];
+        Contador contador = new Contador();
+
+        t1 = System.nanoTime();
+
+        //Start
+        for (int idHebra = 0; idHebra < numHebras; idHebra++){
+            listaHebrasCiclicas[idHebra] = new MiHebraCiclicaSinReducciones(idHebra,numHebras,lista, contador);
+            listaHebrasCiclicas[idHebra].start();
+        }
+
+        //Join
+        for (int idHebra = 0; idHebra < numHebras; idHebra++){
+            try {
+                listaHebrasCiclicas[idHebra].join();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        t2 = System.nanoTime();
+        tt = ((double) (t2 - t1)) / 1.0e9;
+
+        //Resultado
+        System.out.println();
+        System.out.println("Multiplos de 2: "+contador.muestraMultiplosDos());
+        System.out.println("Multiplos de 3: "+contador.muestraMultiplosTres());
+        System.out.println("Multiplos de 5: "+contador.muestraMultiplosCinco());
+        System.out.println("Tiempo total: "+tt);
+        System.out.println("-------------------");
     }
 }
-class MiHebraCiclica extends Thread {
+class MiHebraCiclicaReducciones extends Thread {
     int idHebra;
     int numHebras;
     long[] lista;
     Contador contador;
 
-    public MiHebraCiclica(int idHebra, int numHebras, long[] lista, Contador contador) {
+    public MiHebraCiclicaReducciones(int idHebra, int numHebras, long[] lista, Contador contador) {
         this.idHebra = idHebra;
         this.numHebras = numHebras;
         this.lista = lista;
@@ -112,6 +214,7 @@ class MiHebraCiclica extends Thread {
 
     public void run() {
         //Variables locales, pasar a contador
+        //Reducciones, metodo de los dos pasos
         int multiploDos = 0;
         int multiploTres = 0;
         int multiploCinco = 0;
@@ -133,11 +236,91 @@ class MiHebraCiclica extends Thread {
         contador.asignaMultiplosTres(multiploTres);
         contador.asignaMultiplosCinco(multiploCinco);
     }
+}
+
+class MiHebraCiclicaReduccionesAtomica extends Thread {
+    int idHebra;
+    int numHebras;
+    long[] lista;
+
+    AtomicInteger multiploDos = new AtomicInteger(0);
+    AtomicInteger multiploTres = new AtomicInteger(0);
+    AtomicInteger multiploCinco = new AtomicInteger(0);
+
+    public MiHebraCiclicaReduccionesAtomica(int idHebra, int numHebras, long[] lista) {
+        this.idHebra = idHebra;
+        this.numHebras = numHebras;
+        this.lista = lista;
+    }
+
+    public void run() {
+        //Variables locales, pasar a contador
+
+        for (int i = idHebra; i < lista.length; i += numHebras) {
+            if (i % 2 == 0){
+                multiploDos.getAndIncrement();
+            }
+
+            if (i % 3 == 0){
+                multiploTres.getAndIncrement();
+            }
+
+            if (i % 5 == 0){
+                multiploCinco.getAndIncrement();
+            }
+        }
+    }
+
+    public AtomicInteger getMultiploDos() {
+        return multiploDos;
+    }
+
+    public AtomicInteger getMultiploTres() {
+        return multiploTres;
+    }
+
+    public AtomicInteger getMultiploCinco() {
+        return multiploCinco;
+    }
+}
+
+class MiHebraCiclicaSinReducciones extends Thread {
+    int idHebra;
+    int numHebras;
+    long[] lista;
+    Contador contador;
+
+    public MiHebraCiclicaSinReducciones(int idHebra, int numHebras, long[] lista, Contador contador) {
+        this.idHebra = idHebra;
+        this.numHebras = numHebras;
+        this.lista = lista;
+        this.contador = contador;
+    }
+
+    public void run() {
+
+        for (int i = idHebra; i < lista.length; i += numHebras) {
+            if (i % 2 == 0){
+                contador.incrementaDos();
+            }
+
+            if (i % 3 == 0){
+                contador.incrementaTres();
+            }
+
+            if (i % 5 == 0){
+                contador.incrementaCinco();
+            }
+        }
+
+    }
 
 }
 
 class Contador{
-
+/*
+Podriamos usar Atomic o Synchronized, atomic tiene mejor rendimiento
+ */
     AtomicInteger multiploDos = new AtomicInteger(0);
     AtomicInteger multiploTres = new AtomicInteger(0);
     AtomicInteger multiploCinco = new AtomicInteger(0);
@@ -155,6 +338,17 @@ class Contador{
             multiploCinco.getAndIncrement();
     }
 
+    public void incrementaDos(){
+        multiploDos.getAndIncrement();
+    }
+
+    public void incrementaTres(){
+        multiploTres.getAndIncrement();
+    }
+
+    public void incrementaCinco(){
+        multiploCinco.getAndIncrement();
+    }
     public AtomicInteger muestraMultiplosDos(){
         return multiploDos;
     }

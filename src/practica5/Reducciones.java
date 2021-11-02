@@ -110,7 +110,6 @@ class MiHebraCiclica extends Thread {
         this.contador = contador;
     }
 
-    //Este es el sin reduccion, sin atomic no funciona, para el resto cambiar a atomic.
     public void run() {
         //Variables locales, pasar a contador
         int multiploDos = 0;
@@ -123,7 +122,6 @@ class MiHebraCiclica extends Thread {
 
             if (i % 3 == 0){
                 multiploTres++;
-
             }
 
             if (i % 5 == 0){
@@ -131,7 +129,6 @@ class MiHebraCiclica extends Thread {
             }
 
         }
-
         contador.asignaMultiplosDos(multiploDos);
         contador.asignaMultiplosTres(multiploTres);
         contador.asignaMultiplosCinco(multiploCinco);
@@ -139,29 +136,21 @@ class MiHebraCiclica extends Thread {
 
 }
 
-//Usar atomic
 class Contador{
-    /*
-    volatile int multiploDos;
-    volatile int multiploTres;
-    volatile int multiploCinco;
-    */
+
     AtomicInteger multiploDos = new AtomicInteger(0);
     AtomicInteger multiploTres = new AtomicInteger(0);
     AtomicInteger multiploCinco = new AtomicInteger(0);
 
     public void asignaMultiplosDos(int multiplos){
-        //this.multiploDos = multiplos;
         for (int i = 0; i < multiplos; i++)
             multiploDos.getAndIncrement();
     }
     public void asignaMultiplosTres(int multiplos){
-        //this.multiploTres = multiplos;
         for (int i = 0; i < multiplos; i++)
             multiploTres.getAndIncrement();
     }
     public void asignaMultiplosCinco(int multiplos){
-        //this.multiploCinco = multiplos;
         for (int i = 0; i < multiplos; i++)
             multiploCinco.getAndIncrement();
     }

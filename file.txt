@@ -1,0 +1,2 @@
+MaximoVector usa synchronized.
+Reducciones usa reducciones, no reducciones y atomics

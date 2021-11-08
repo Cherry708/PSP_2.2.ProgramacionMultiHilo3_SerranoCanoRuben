@@ -29,11 +29,11 @@ public class Actividad1SinReducciones {
         double tTotalCiclica;
 
         int numHebras = 4;
-        MiHebraCiclica[] listaHebrasCiclicas = new MiHebraCiclica[numHebras];
+        MiHebraCiclicaSinReduccion[] listaHebrasCiclicas = new MiHebraCiclicaSinReduccion[numHebras];
         Acumula acumulador = new Acumula();
 
         for (int idHebra = 0; idHebra < numHebras; idHebra++){
-            listaHebrasCiclicas[idHebra] = new MiHebraCiclica(idHebra,numHebras, vectorDoubles,acumulador);
+            listaHebrasCiclicas[idHebra] = new MiHebraCiclicaSinReduccion(idHebra,numHebras, vectorDoubles,acumulador);
             listaHebrasCiclicas[idHebra].start();
         }
 
@@ -52,24 +52,23 @@ public class Actividad1SinReducciones {
         System.out.println("Tiempo Ciclica: "+tTotalCiclica);
     }
 }
-/*
-class MiHebraCiclica extends Thread {
+
+class MiHebraCiclicaSinReduccion extends Thread {
     int  miId, numHebras;
     double[]  vector;
-    Acumula  a;
+    Acumula acumulador;
 
-    public MiHebraCiclica(int idHebra, int numHebras, double[] vector, Acumula a ) {
+    public MiHebraCiclicaSinReduccion(int idHebra, int numHebras, double[] vector, Acumula a ) {
         this.miId = idHebra;
         this.numHebras = numHebras;
         this.vector = vector;
-        this.a = a;
+        this.acumulador = a;
     }
 
     public void run () {
         for ( int i = miId; i < vector.length; i += numHebras ) {
-            a.acumulaValor ( vector [ i ] );
+            acumulador.acumulaValor ( vector [ i ] );
         }
     }
 }
- */
 

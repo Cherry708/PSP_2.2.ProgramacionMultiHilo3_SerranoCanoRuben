@@ -7,8 +7,8 @@ public class MaximoVector {
         long[] vectorLong =
                 {1L, 2L, 3L, 4L, 5L, 6L,
                         7L, 8L, 9L, 10L, 11L, 12L,
-                        13L, 14L,15L,16L,17L,18L,19L,
-                        20L,21L,22L,23L,24L};
+                        13L, 14L, 15L, 16L, 17L, 18L, 19L,
+                        20L, 21L, 22L, 23L, 24L};
 
         //Secuencial
         long maximo = 0;
@@ -17,15 +17,15 @@ public class MaximoVector {
         double tTotalSecuencial;
 
         tIniSecuencial = System.nanoTime();
-        for(int i = 0; i < vectorLong.length; i++){
-            if (vectorLong[i] > maximo){
+        for (int i = 0; i < vectorLong.length; i++) {
+            if (vectorLong[i] > maximo) {
                 maximo = vectorLong[i];
             }
         }
         tFinSecuencial = System.nanoTime();
         tTotalSecuencial = ((double) (tFinSecuencial - tIniSecuencial)) / 1.0e9;
-        System.out.println("Maximo secuencial: "+maximo);
-        System.out.println("Tiempo secuencial: "+tTotalSecuencial);
+        System.out.println("Maximo secuencial: " + maximo);
+        System.out.println("Tiempo secuencial: " + tTotalSecuencial);
 
         //Ciclico
         long tIniCiclica;
@@ -34,11 +34,11 @@ public class MaximoVector {
 
         int numHebras = 4;
         MaximoHebraCiclica[] listaHebrasCiclicas = new MaximoHebraCiclica[numHebras];
-        MaximoHebra maximoHebra = new MaximoHebra();
+        MaximoValorVector maximoHebra = new MaximoValorVector();
 
 
-        for (int idHebra = 0; idHebra < numHebras; idHebra++){
-            listaHebrasCiclicas[idHebra] = new MaximoHebraCiclica(idHebra,numHebras, vectorLong, maximoHebra);
+        for (int idHebra = 0; idHebra < numHebras; idHebra++) {
+            listaHebrasCiclicas[idHebra] = new MaximoHebraCiclica(idHebra, numHebras, vectorLong, maximoHebra);
             listaHebrasCiclicas[idHebra].start();
         }
 
@@ -53,31 +53,33 @@ public class MaximoVector {
         tFinCiclica = System.nanoTime();
 
         tTotalCiclica = ((double) (tFinCiclica - tIniCiclica)) / 1.0e9;
-        System.out.println("Maximo ciclico: "+maximoHebra.dameResultado());
-        System.out.println("Tiempo secuencial: "+tTotalCiclica);
-
+        System.out.println("Maximo ciclico: " + maximoHebra.dameResultado());
+        System.out.println("Tiempo secuencial: " + tTotalCiclica);
 
 
     }
 }
-class MaximoHebraCiclica extends Thread{
+
+class MaximoHebraCiclica extends Thread {
     int idHebra;
     int numHebras;
     long[] vectorLong;
-    MaximoHebra maximoVector;
+    MaximoValorVector maximoVector;
 
-    MaximoHebraCiclica(int idHebra, int numHebras, long[] vectorLong, MaximoHebra maximoVector){
+    MaximoHebraCiclica(int idHebra, int numHebras, long[] vectorLong, MaximoValorVector maximoVector) {
         this.idHebra = idHebra;
         this.numHebras = numHebras;
         this.vectorLong = vectorLong;
         this.maximoVector = maximoVector;
     }
 
-
+    /*
+    Usa reducciones, primero asigna a una variable local y al terminar lo asigna al objeto
+     */
     public void run() {
         long valorMaximo = 0;
-        for (int i = idHebra; i < vectorLong.length; i += numHebras){
-            if (vectorLong[i] > valorMaximo){
+        for (int i = idHebra; i < vectorLong.length; i += numHebras) {
+            if (vectorLong[i] > valorMaximo) {
                 valorMaximo = vectorLong[i];
             }
             maximoVector.asignaValor(valorMaximo);
@@ -86,10 +88,12 @@ class MaximoHebraCiclica extends Thread{
     }
 }
 
-class MaximoHebra {
+class MaximoValorVector {
     long maximo = 0;
+
     //Es realmente necesario synchronized? No, al ser una asignacion con volatile es suficiente
-    synchronized void asignaValor(long valor ) {
+    //CORRECCION: NO, VOLATILE NO ES SUFICIENTE
+    synchronized void asignaValor(long valor) {
         this.maximo = valor;
     }
 

@@ -105,7 +105,7 @@ public class Reducciones {
 
     static void implementacionCiclicaAtomica(long[] lista, int numHebras){
         System.out.println();
-        System.out.println("Implementacion ciclica atomica con reducciones");
+        System.out.println("Implementacion ciclica atomica");
 
         //contadores
         int multiploDos = 0;
@@ -118,13 +118,13 @@ public class Reducciones {
         double tt;
 
         //Objetos
-        MiHebraCiclicaReduccionesAtomica[] listaHebrasCiclicas = new MiHebraCiclicaReduccionesAtomica[numHebras];
+        MiHebraCiclicaAtomica[] listaHebrasCiclicas = new MiHebraCiclicaAtomica[numHebras];
 
         t1 = System.nanoTime();
 
         //Start
         for (int idHebra = 0; idHebra < numHebras; idHebra++){
-            listaHebrasCiclicas[idHebra] = new MiHebraCiclicaReduccionesAtomica(idHebra,numHebras,lista);
+            listaHebrasCiclicas[idHebra] = new MiHebraCiclicaAtomica(idHebra,numHebras,lista);
             listaHebrasCiclicas[idHebra].start();
         }
 
@@ -215,6 +215,10 @@ class MiHebraCiclicaReducciones extends Thread {
     public void run() {
         //Variables locales, pasar a contador
         //Reducciones, metodo de los dos pasos
+
+        /*Estas variables actuan como buffer,
+        optimizando la transferencia de datos
+        y mejorando así el rendimiento*/
         int multiploDos = 0;
         int multiploTres = 0;
         int multiploCinco = 0;
@@ -237,25 +241,27 @@ class MiHebraCiclicaReducciones extends Thread {
         contador.asignaMultiplosCinco(multiploCinco);
     }
 }
-
-class MiHebraCiclicaReduccionesAtomica extends Thread {
+/*
+ERROR: NO INCORPORA REDUCCIONES, ES SOLO ATOMICA
+ */
+class MiHebraCiclicaAtomica extends Thread {
     int idHebra;
     int numHebras;
     long[] lista;
 
+    //La clase hebra tiene contadores atómicos, no necesita objeto Contador
     AtomicInteger multiploDos = new AtomicInteger(0);
     AtomicInteger multiploTres = new AtomicInteger(0);
     AtomicInteger multiploCinco = new AtomicInteger(0);
 
-    public MiHebraCiclicaReduccionesAtomica(int idHebra, int numHebras, long[] lista) {
+    public MiHebraCiclicaAtomica(int idHebra, int numHebras, long[] lista) {
         this.idHebra = idHebra;
         this.numHebras = numHebras;
         this.lista = lista;
     }
 
+    //Durante la ejecución se modifican los contadores
     public void run() {
-        //Variables locales, pasar a contador
-
         for (int i = idHebra; i < lista.length; i += numHebras) {
             if (i % 2 == 0){
                 multiploDos.getAndIncrement();
@@ -271,6 +277,7 @@ class MiHebraCiclicaReduccionesAtomica extends Thread {
         }
     }
 
+    //Implementamos métodos para la obtención del valor de cada contador
     public AtomicInteger getMultiploDos() {
         return multiploDos;
     }
@@ -349,14 +356,16 @@ Podriamos usar Atomic o Synchronized, atomic tiene mejor rendimiento
     public void incrementaCinco(){
         multiploCinco.getAndIncrement();
     }
+
     public AtomicInteger muestraMultiplosDos(){
         return multiploDos;
     }
+
     public AtomicInteger muestraMultiplosTres(){
         return multiploTres;
     }
+
     public AtomicInteger muestraMultiplosCinco(){
         return multiploCinco;
     }
-
 }

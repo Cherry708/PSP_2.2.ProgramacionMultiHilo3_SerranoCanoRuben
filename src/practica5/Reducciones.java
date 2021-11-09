@@ -333,6 +333,7 @@ Podriamos usar Atomic o Synchronized, atomic tiene mejor rendimiento
     AtomicInteger multiploCinco = new AtomicInteger(0);
 
     public void asignaMultiplosDos(int multiplos){
+        //Este sistema funciona, el método set de Atomic NO
         for (int i = 0; i < multiplos; i++)
             multiploDos.getAndIncrement();
     }
